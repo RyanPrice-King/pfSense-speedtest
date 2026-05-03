@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Called on package removal
+# Keep log by default; uncomment to remove:
+# rm -f /var/log/speedtest.log 2>/dev/null
+
+exit 0

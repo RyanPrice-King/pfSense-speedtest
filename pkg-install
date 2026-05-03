@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Called on package install/upgrade
+LOGFILE="/var/log/speedtest.log"
+
+if [ ! -f "${LOGFILE}" ]; then
+  touch "${LOGFILE}" 2>/dev/null
+fi
+
+exit 0

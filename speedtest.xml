@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pfsense>
+  <package>
+    <name>speedtest</name>
+    <version>1.0.0</version>
+    <title>Speedtest</title>
+    <descr>Modern Speedtest Diagnostics using speedtest-go with charts, RRD, and advanced controls.</descr>
+    <category>Diagnostics</category>
+    <status>stable</status>
+    <required_version>2.7.0</required_version>
+
+    <!-- Main Speedtest Page -->
+    <menu>
+      <name>Speedtest</name>
+      <tooltip>Run a modern network speed test</tooltip>
+      <section>Diagnostics</section>
+      <url>/diag_speedtest.php</url>
+    </menu>
+
+    <!-- Graph Page -->
+    <menu>
+      <name>Speedtest Graphs</name>
+      <tooltip>View long-term speedtest performance graphs</tooltip>
+      <section>Diagnostics</section>
+      <url>/graph_speedtest.php</url>
+    </menu>
+
+    <!-- Privileges -->
+    <priv>
+      <name>page-diagnostics-speedtest</name>
+      <descr>Access to Diagnostics: Speedtest</descr>
+      <match>diag_speedtest.php</match>
+    </priv>
+
+    <priv>
+      <name>page-diagnostics-speedtest-graphs</name>
+      <descr>Access to Diagnostics: Speedtest Graphs</descr>
+      <match>graph_speedtest.php</match>
+    </priv>
+
+    <!-- Installable Files -->
+    <files>
+      <file>
+        <name>diag_speedtest.php</name>
+        <path>/usr/local/www/</path>
+      </file>
+      <file>
+        <name>diag_speedtest_run.php</name>
+        <path>/usr/local/www/</path>
+      </file>
+      <file>
+        <name>diag_speedtest_servers.php</name>
+        <path>/usr/local/www/</path>
+      </file>
+      <file>
+        <name>diag_speedtest_cities.php</name>
+        <path>/usr/local/www/</path>
+      </file>
+      <file>
+        <name>graph_speedtest.php</name>
+        <path>/usr/local/www/</path>
+      </file>
+      <file>
+        <name>css/speedtest.css</name>
+        <path>/usr/local/www/css/</path>
+      </file>
+      <file>
+        <name>pkg-install</name>
+        <path>/usr/local/pkg/</path>
+      </file>
+      <file>
+        <name>pkg-deinstall</name>
+        <path>/usr/local/pkg/</path>
+      </file>
+    </files>
+
+  </package>
+</pfsense>

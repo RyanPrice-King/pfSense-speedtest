@@ -1,0 +1,18 @@
+#name: "pfsense-pkg-speedtest"
+version: "1.0.0"
+comment: "Speedtest diagnostics package using speedtest-go"
+arch: "FreeBSD:15:amd64"
+
+desc: |
+  Modern Speedtest Diagnostics using speedtest-go with charts and various advanced controls.
+
+files: |
+  "usr/local/www/diag_speedtest.php"
+  "usr/local/www/diag_speedtest_run.php"
+  "usr/local/www/diag_speedtest_servers.php"
+  "usr/local/www/diag_speedtest_cities.php"
+  "usr/local/www/graph_speedtest.php"
+  "usr/local/www/css/speedtest.css"
+  "usr/local/pkg/speedtest.xml"
+  "usr/local/pkg/pkg-install"
+  "usr/local/pkg/pkg-deinstall"
