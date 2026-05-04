@@ -15,15 +15,12 @@ include("head.inc");
 </form>
 
 <div class="speedtest-page">
-
   <!-- Header -->
   <div class="speedtest-header">
-    <div>
       <div class="speedtest-title">Speedtest</div>
       <div class="speedtest-subtitle">
         Modern diagnostics powered by speedtest-go with full advanced controls.
       </div>
-    </div>
   </div>
 
   <!-- Control Panel -->
@@ -79,12 +76,6 @@ include("head.inc");
       <input id="st-proxy" class="st-input" placeholder="http://user:pass@host:port">
     </div>
 
-    <!-- Source Interface -->
-    <div class="st-control-group">
-      <label class="st-label">Source Interface</label>
-      <input id="st-source" class="st-input" placeholder="e.g. igb0">
-    </div>
-
     <!-- Ping Mode -->
     <div class="st-control-group">
       <label class="st-label">Ping Mode</label>
@@ -106,18 +97,6 @@ include("head.inc");
       </select>
     </div>
 
-    <!-- Threads -->
-    <div class="st-control-group">
-      <label class="st-label">Threads</label>
-      <input id="st-thread" class="st-input" type="number" min="1" max="64" value="8">
-    </div>
-
-    <!-- User-Agent -->
-    <div class="st-control-group">
-      <label class="st-label">User-Agent</label>
-      <input id="st-ua" class="st-input" placeholder="Custom UA">
-    </div>
-
     <!-- Toggles -->
     <div class="st-control-group">
       <label class="st-label">Options</label>
@@ -126,8 +105,7 @@ include("head.inc");
         <label><input type="checkbox" id="st-saving"> Saving mode</label><br>
         <label><input type="checkbox" id="st-no-download"> No download</label><br>
         <label><input type="checkbox" id="st-no-upload"> No upload</label><br>
-        <label><input type="checkbox" id="st-debug"> Debug</label><br>
-        <label><input type="checkbox" id="st-dns-bind"> DNS bind source</label>
+        <label><input type="checkbox" id="st-debug"> Debug</label>
       </div>
     </div>
 
@@ -137,7 +115,7 @@ include("head.inc");
       <button id="st-run" class="st-start-btn st-glow-soft">Run Speedtest</button>
     </div>
 
-  </div>
+</div>
 
   <!-- Status -->
   <div class="speedtest-status" id="st-status">
@@ -190,8 +168,6 @@ include("head.inc");
     </div>
 
 </div> <!-- END TOP ROW -->
-
-
 
 <!-- BOTTOM ROW: Client, Server, Result ID -->
 <div class="st-tiles bottom-row">
@@ -274,7 +250,7 @@ include("head.inc");
               </div>
           </div>
           <div class="st-gauge-value" id="val-download">0</div>
-          <div class="st-gauge-desc">Measured in Mbps (Megabits per second)</div>
+          <div class="st-gauge-desc">Download speed (Mbps)</div>
       </div>
 
       <!-- Upload -->
@@ -289,7 +265,7 @@ include("head.inc");
               </div>
           </div>
           <div class="st-gauge-value" id="val-upload">0</div>
-          <div class="st-gauge-desc">Measured in Mbps (Megabits per second)</div>
+          <div class="st-gauge-desc">Upload speed (Mbps)</div>
       </div>
 
       <!-- Ping -->
@@ -304,7 +280,7 @@ include("head.inc");
               </div>
           </div>
           <div class="st-gauge-value" id="val-ping">0</div>
-          <div class="st-gauge-desc">Round‑trip latency in milliseconds</div>
+          <div class="st-gauge-desc">Round‑trip latency (ms)</div>
       </div>
 
       <!-- Jitter -->
@@ -384,7 +360,8 @@ include("head.inc");
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-let avgDL = 0, avgUL = 0, avgPing = 0, avgJitter = 0;
+let avgDL = 0, avgUL = 0, avgPing = 0, avgJitter = 0, avgDLPct = 0, avgULPct = 0, avgPingPct = 0, avgJitterPct = 0;
+let debugEnabled = false;
 
 function computeHistoryAverages(history) {
     // Take last 10 entries
@@ -394,6 +371,11 @@ function computeHistoryAverages(history) {
     avgUL = last10.reduce((a, b) => a + Number(b.upload || 0), 0) / last10.length;
     avgPing = last10.reduce((a, b) => a + Number(b.ping_ms || 0), 0) / last10.length;
     avgJitter = last10.reduce((a, b) => a + Number(b.jitter_ms || 0), 0) / last10.length;
+
+    avgDLPct     = (avgDL     / 1200) * 100;
+    avgULPct     = (avgUL     / 120)  * 100;
+    avgPingPct   = (avgPing   / 60)   * 100;
+    avgJitterPct = (avgJitter / 10)   * 100;
 }
 
 function loadHistory() {
@@ -602,8 +584,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [300, 800, 1200],
-                    backgroundColor: gaugeGradient(ctx, 0, 1200),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             }
@@ -621,8 +603,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [300, 800, 1200],
-                    backgroundColor: gaugeGradient(ctx, 0, 1200),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             }
@@ -640,8 +622,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [30, 40, 120],
-                    backgroundColor: gaugeGradient(ctx, 0, 120),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             }
@@ -659,8 +641,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [30, 40, 120],
-                    backgroundColor: gaugeGradient(ctx, 0, 120),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             }
@@ -678,8 +660,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [20, 40, 60],
-                    backgroundColor: gaugeGradient(ctx, 0, 60),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             },
@@ -704,8 +686,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [20, 40, 60],
-                    backgroundColor: gaugeGradient(ctx, 0, 60),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             },
@@ -730,8 +712,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [1, 5, 10],
-                    backgroundColor: gaugeGradient(ctx, 0, 10),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             },
@@ -756,8 +738,8 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
             data: {
                 datasets: [{
                     value: 0,
-                    data: [1, 5, 10],
-                    backgroundColor: gaugeGradient(ctx, 0, 10),
+                    data: [33, 66, 100],
+                    backgroundColor: gaugeGradient(ctx, 0, 100),
                     borderWidth: 0
                 }]
             },
@@ -776,17 +758,13 @@ let downloadChart, avgDownloadChart, uploadChart, avgUploadChart, pingChart, avg
 // Update Function
 // ------------------------------
 
-function updateGauge(chart, value, max) {
+function updateGauge(chart, pct) {
     if (!chart) return;
 
-    // Clamp value
-    const v = Math.min(value, max);
+    const v = Math.min(pct, 100);
 
-    // Update gauge value
     chart.data.datasets[0].value = v;
-
-    // Update domain (required for chartjs-chart-gauge)
-    chart.options.domain = [0, max];
+    chart.options.domain = [0, 100];
 
     chart.update();
 }
@@ -798,6 +776,12 @@ function updateThroughputCharts(data) {
     const ul = Number(data.upload) || 0;
     const ping = Number(data.ping_ms) || 0;
     const jitter = Number(data.jitter_ms) || 0;
+
+    const dlPct     = (dl     / 1200) * 100;
+    const ulPct     = (ul     / 120)  * 100;
+    const pingPct   = (ping   / 60)   * 100;
+    const jitterPct = (jitter / 10)   * 100;
+
 
     if (downloadChart) {
         const ctx = downloadChart.ctx;
@@ -867,14 +851,14 @@ function updateThroughputCharts(data) {
     document.getElementById("val-avg-ping").textContent = avgPing.toFixed(1) + " ms";
     document.getElementById("val-avg-jitter").textContent = avgJitter.toFixed(1) + " ms";
 
-    updateGauge(downloadChart, dl, 1200);
-    updateGauge(uploadChart, ul, 120);
-    updateGauge(pingChart, ping, 60);
-    updateGauge(jitterChart, jitter, 10);
-    updateGauge(avgDownloadChart, avgDL, 1200);
-    updateGauge(avgUploadChart, avgUL, 120);
-    updateGauge(avgPingChart, avgPing, 60);
-    updateGauge(avgJitterChart, avgJitter, 10);
+    updateGauge(downloadChart, dlPct);
+    updateGauge(uploadChart, ulPct);
+    updateGauge(pingChart, pingPct);
+    updateGauge(jitterChart, jitterPct);
+    updateGauge(avgDownloadChart, avgDLPct);
+    updateGauge(avgUploadChart, avgULPct);
+    updateGauge(avgPingChart, avgPingPct);
+    updateGauge(avgJitterChart, avgJitterPct);
 }
 
 function updateHistoryTable(list) {
@@ -1076,17 +1060,13 @@ if (loadCitiesBtn) {
       location: document.getElementById('st-location').value,
       city: document.getElementById('st-city').value,
       proxy: document.getElementById('st-proxy').value,
-      source: document.getElementById('st-source').value,
       unit: document.getElementById('st-unit').value,
       ping_mode: document.getElementById('st-ping-mode').value,
-      thread: document.getElementById('st-thread').value,
-      ua: document.getElementById('st-ua').value,
       multi: document.getElementById('st-multi').checked,
       saving: document.getElementById('st-saving').checked,
       no_download: document.getElementById('st-no-download').checked,
       no_upload: document.getElementById('st-no-upload').checked,
       debug: document.getElementById('st-debug').checked,
-      dns_bind: document.getElementById('st-dns-bind').checked
     };
 
     // 3. Build POST body correctly
@@ -1099,6 +1079,19 @@ if (loadCitiesBtn) {
     setTileActive(true);
     setStatus("Running speedtest-go…");
 
+    debugEnabled = document.getElementById("st-debug").checked;
+
+    let debugWin = null;
+
+    if (debugEnabled) {
+        debugWin = window.open("", "_blank", "width=900,height=700,resizable=yes,scrollbars=yes");
+        if (!debugWin) {
+            alert("Popup blocked. Allow popups for this page.");
+            return;
+        }
+        debugWin.document.write("<pre>Debug mode enabled...\nWaiting for output...</pre>");
+    }
+
     fetch("/diag_speedtest_run.php", {
       method: "POST",
       body,
@@ -1107,10 +1100,23 @@ if (loadCitiesBtn) {
     .then(r => r.json())
     .then(data => {
 
+    if (debugEnabled) {
+    const text = data && data.output
+        ? data.output
+        : "No debug output returned.";
+
+    debugWin.document.body.innerHTML =
+        "<pre style='white-space: pre-wrap; font-size: 14px;'>" +
+        text.replace(/</g, "&lt;") +
+        "</pre>";
+
+         return;
+      }
+
       runBtn.disabled = false;
       setTileActive(false);
 
-      if (data.error) {
+      if (data.error && !(debugEnabled)) {
         setStatus("Error: " + data.error);
         return;
       }

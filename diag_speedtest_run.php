@@ -81,6 +81,20 @@ if (!empty($req["server"])) {
 // Execute
 exec("$cmd 2>&1", $out, $rc);
 
+// Combine output
+$output = implode("\n", $out);
+
+// If debug mode is enabled, return debug JSON
+if ($req["debug"]) {
+
+    echo json_encode([
+        "debug" => true,
+        "cmd" => $cmd,
+        "output" => $output
+    ]);
+exit;
+}
+
 if ($rc !== 0) {
     echo json_encode(["error" => "speedtest-go failed", "cmd" => $cmd, "output" => $out]);
     exit;
